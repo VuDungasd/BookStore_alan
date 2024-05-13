@@ -1,4 +1,4 @@
-package com.example.ecomerce_bookstore.services;
+package com.example.ecomerce_bookstore.services.impl;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -10,6 +10,8 @@ import com.example.ecomerce_bookstore.exceptions.ResourceNotFoundException;
 import com.example.ecomerce_bookstore.payloads.CategoryDTO;
 import com.example.ecomerce_bookstore.payloads.CategoryResponse;
 import com.example.ecomerce_bookstore.repositories.CategoryRepo;
+import com.example.ecomerce_bookstore.services.BookService;
+import com.example.ecomerce_bookstore.services.CategoryService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

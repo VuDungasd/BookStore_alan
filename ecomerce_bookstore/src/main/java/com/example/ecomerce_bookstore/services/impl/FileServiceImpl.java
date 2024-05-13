@@ -1,5 +1,6 @@
-package com.example.ecomerce_bookstore.services;
+package com.example.ecomerce_bookstore.services.impl;
 
+import com.example.ecomerce_bookstore.services.FileService;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;

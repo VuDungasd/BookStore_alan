@@ -1,13 +1,14 @@
-package com.example.ecomerce_bookstore.security;
+package com.example.ecomerce_bookstore.config.filter;
 
 import java.io.IOException;
 
-import com.example.ecomerce_bookstore.services.UserDetailsServiceImpl;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.ecomerce_bookstore.jwt.JwtService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Service;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.auth0.jwt.exceptions.JWTVerificationException;
@@ -17,32 +18,31 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-@Service
+@RequiredArgsConstructor
+@Slf4j
 public class JWTFilter extends OncePerRequestFilter {
 
-    @Autowired
-    private JWTUtil jwtUtil;
+    private final JwtService jwtService;
 
-    @Autowired
-    private UserDetailsServiceImpl userDetailsServiceImpl;
+    private final UserDetailsService userDetailsServiceImpl;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
         String authHeader = request.getHeader("Authorization");
-        System.out.println(authHeader);
+        log.warn("token: {}",authHeader);
 
         if (authHeader != null && !authHeader.isBlank() && authHeader.startsWith("Bearer ")) {
             String jwt = authHeader.substring(7);
-
+            log.info("jwt: {} ",jwt);
             if (jwt == null || jwt.isBlank()) {
                 response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid JWT token in Authorization Header");
             } else {
+                log.info("validate start......");
                 try {
-                    String email = jwtUtil.validateTokenAndRetrieveSubject(jwt);
-                    System.out.println(email);
-
+                    String email = jwtService.extractClaims(jwt).getSubject();
+                    log.warn("email: {}",email);
                     UserDetails userDetails = userDetailsServiceImpl.loadUserByUsername(email);
 
                     UsernamePasswordAuthenticationToken authToken =

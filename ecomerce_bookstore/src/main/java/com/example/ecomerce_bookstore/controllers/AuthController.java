@@ -1,23 +1,19 @@
 package com.example.ecomerce_bookstore.controllers;
 
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 
-import com.example.ecomerce_bookstore.entities.User;
 import com.example.ecomerce_bookstore.exceptions.UserNotFoundException;
 import com.example.ecomerce_bookstore.payloads.LoginCredentials;
 import com.example.ecomerce_bookstore.payloads.UserDTO;
-import com.example.ecomerce_bookstore.security.JWTUtil;
+import com.example.ecomerce_bookstore.jwt.JwtService;
 import com.example.ecomerce_bookstore.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -33,11 +29,9 @@ import jakarta.validation.Valid;
 @RequestMapping("/api")
 @SecurityRequirement(name = "E-Commerce Application")
 public class AuthController {
-    @Autowired
-    private UserService userService;
+    private final JwtService jwtService;
 
-    @Autowired
-    private JWTUtil jwtUtil;
+    private final UserService userService;
 
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -55,7 +49,7 @@ public class AuthController {
 
         UserDTO userDTO = userService.registerUser(user);
 
-        String token = jwtUtil.generateToken(userDTO.getEmail());
+        String token = jwtService.generateToken(userDTO.getEmail());
 
         return new ResponseEntity<Map<String, Object>>(Collections.singletonMap("jwt-token", token),
                 HttpStatus.CREATED);
@@ -115,8 +109,8 @@ public class AuthController {
 
         authenticationManager.authenticate(authCredentials);
 
-        String token = jwtUtil.generateToken(credentials.getEmail());
-
+//        String token = jwtUtil.generateToken(credentials.getEmail());
+        String token = jwtService.generateToken(credentials.getEmail());
         return Collections.singletonMap("jwt-token", token);
     }
 //    @PostMapping("/login")

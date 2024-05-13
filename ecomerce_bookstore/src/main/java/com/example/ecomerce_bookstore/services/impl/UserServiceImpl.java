@@ -1,4 +1,4 @@
-package com.example.ecomerce_bookstore.services;
+package com.example.ecomerce_bookstore.services.impl;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -11,6 +11,7 @@ import com.example.ecomerce_bookstore.payloads.*;
 import com.example.ecomerce_bookstore.repositories.AddressRepo;
 import com.example.ecomerce_bookstore.repositories.RoleRepo;
 import com.example.ecomerce_bookstore.repositories.UserRepo;
+import com.example.ecomerce_bookstore.services.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -231,7 +232,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User find(String username) {
-        return userRepo.findByEmail(username).orElseThrow(RuntimeException::new);
+        return userRepo.findUserByEmail(username);
     }
 
 }

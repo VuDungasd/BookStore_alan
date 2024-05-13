@@ -44,31 +44,31 @@ public class EcomerceBookstoreApplication implements CommandLineRunner {
     public void run(String... args) throws Exception {
 
         try {
-            Role adminRole = new Role();
-            adminRole.setRoleId(AppConstants.ADMIN_ID);
-            adminRole.setRoleName("ADMIN");
+//            Role adminRole = new Role();
+//            adminRole.setRoleId(AppConstants.ADMIN_ID);
+//            adminRole.setRoleName("ADMIN");
+//
+//            Role userRole = new Role();
+//            userRole.setRoleId(AppConstants.USER_ID);
+//            userRole.setRoleName("USER");
+//
+//            List<Role> roles = List.of(adminRole, userRole);
+//
+//            List<Role> savedRoles = roleRepo.saveAll(roles);
+//
+//            savedRoles.forEach(System.out::println);
 
-            Role userRole = new Role();
-            userRole.setRoleId(AppConstants.USER_ID);
-            userRole.setRoleName("USER");
 
-            List<Role> roles = List.of(adminRole, userRole);
-
-            List<Role> savedRoles = roleRepo.saveAll(roles);
-
-            savedRoles.forEach(System.out::println);
-
-
-            // add cứng ngừoi dùng
-
-            // Tìm kiếm vai trò trong cơ sở dữ liệu
+//             add cứng ngừoi dùng
+//
+//             Tìm kiếm vai trò trong cơ sở dữ liệu
 //            Role role = roleRepo.findById(AppConstants.USER_ID)
 //                    .orElseThrow(() -> new ResourceNotFoundException("Role", "roleId", AppConstants.USER_ID));
-
+//
 //            User user = new User();
 //            user.setEmail("loda@gmail.com");
 //            user.setPassword(passwordEncoder.encode("1234"));
-
+//
 //            System.out.println("chay duoc role");
 //            userRepository.save(user);
 //            System.out.println(user);
@@ -77,8 +77,8 @@ public class EcomerceBookstoreApplication implements CommandLineRunner {
 //                User user = new User();
 //                user.setEmail("loda@gmail.com");
 //                user.setPassword(passwordEncoder.encode("1234"));
-//
-//                // Lưu lại thông tin của người dùng để cập nhật vai trò
+
+                // Lưu lại thông tin của người dùng để cập nhật vai trò
 //                userRepository.save(user);
 //                System.out.println(user);
 

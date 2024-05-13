@@ -1,8 +1,7 @@
 package com.example.ecomerce_bookstore.config;
 
-import com.example.ecomerce_bookstore.config.AppConstants;
-import com.example.ecomerce_bookstore.security.JWTFilter;
-import com.example.ecomerce_bookstore.services.UserDetailsServiceImpl;
+import com.example.ecomerce_bookstore.config.filter.JWTFilter;
+import com.example.ecomerce_bookstore.jwt.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,13 +12,11 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.DefaultSecurityFilterChain;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-
-import jakarta.servlet.http.HttpServletResponse;
 
 @Configuration
 @EnableWebSecurity
@@ -27,26 +24,30 @@ import jakarta.servlet.http.HttpServletResponse;
 public class SecurityConfig {
 
     @Autowired
-    private JWTFilter jwtFilter;
-
+    private UserDetailsService userDetailsService;
     @Autowired
-    private UserDetailsServiceImpl userDetailsServiceImpl;
+    private JwtService jwtService;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
+                .cors()
+                .and()
                 .csrf()
                 .disable()
                 .authorizeHttpRequests()
 //                .requestMatchers(AppConstants.PUBLIC_URLS).permitAll()
-                .requestMatchers(AppConstants.USER_URLS).permitAll()
-                .requestMatchers(AppConstants.ADMIN_URLS).permitAll()
+                .requestMatchers(AppConstants.USER_URLS).hasAuthority("USER")
+                .requestMatchers(AppConstants.ADMIN_URLS).hasAuthority("ADMIN")
                 .anyRequest().permitAll()
+
 //                .authenticated()
-                .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+                .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                . addFilterBefore(new JWTFilter(jwtService,userDetailsService), UsernamePasswordAuthenticationFilter.class);
         return http.build();
 
-//        http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+//        http.
 //
 //        http.authenticationProvider(daoAuthenticationProvider());
 //
@@ -59,7 +60,7 @@ public class SecurityConfig {
     public DaoAuthenticationProvider daoAuthenticationProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
 
-        provider.setUserDetailsService(userDetailsServiceImpl);
+        provider.setUserDetailsService(userDetailsService);
         provider.setPasswordEncoder(passwordEncoder());
 
         return provider;
